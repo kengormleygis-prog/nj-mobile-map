@@ -81,6 +81,35 @@
         .leaflet-control-zoom a {
             border-bottom-color: #444;
         }
+        .leaflet-control-location .location-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border: 0;
+            border-radius: 4px;
+            background: #222;
+            color: #f2f2f2;
+            cursor: pointer;
+        }
+        .leaflet-control-location .location-button svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+        .leaflet-control-location .location-button:focus-visible {
+            outline: 2px solid #a8c7fa;
+            outline-offset: 2px;
+        }
+        .leaflet-control-location .location-button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
         .leaflet-control-attribution a {
             color: #a8c7fa !important;
         }
@@ -277,6 +306,72 @@
             bbox: [-75.65, 38.9, -73.85, 41.4]
         }).addTo(map);
         addressSearchControl.getContainer().querySelector('input').setAttribute('aria-label', 'Search an address');
+        var locationButton;
+        var userLocationMarker;
+        var userLocationAccuracy;
+        function locateUser() {
+            if (!navigator.geolocation) {
+                alert('Location is not supported by this browser.');
+                return;
+            }
+            locationButton.disabled = true;
+            locationButton.setAttribute('aria-busy', 'true');
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var location = L.latLng(position.coords.latitude, position.coords.longitude);
+                var accuracy = position.coords.accuracy;
+                if (!userLocationAccuracy) {
+                    userLocationAccuracy = L.circle(location, accuracy, {
+                        color: '#60a5fa',
+                        weight: 1,
+                        fillColor: '#3b82f6',
+                        fillOpacity: 0.18
+                    }).addTo(map);
+                    userLocationMarker = L.circleMarker(location, {
+                        radius: 8,
+                        color: '#ffffff',
+                        weight: 3,
+                        fillColor: '#2563eb',
+                        fillOpacity: 1
+                    }).addTo(map);
+                } else {
+                    userLocationAccuracy.setLatLng(location).setRadius(accuracy);
+                    userLocationMarker.setLatLng(location);
+                }
+                userLocationMarker.bindPopup('Your location (accuracy: ' + Math.round(accuracy) + ' m)');
+                map.setView(location, Math.max(map.getZoom(), 16));
+                locationButton.disabled = false;
+                locationButton.removeAttribute('aria-busy');
+            }, function (error) {
+                var message = 'Could not get your location. Please try again.';
+                if (error.code === error.PERMISSION_DENIED) {
+                    message = 'Location permission was denied. Allow location access in your browser settings to use this feature.';
+                } else if (error.code === error.POSITION_UNAVAILABLE) {
+                    message = 'Your location is currently unavailable. Please try again.';
+                } else if (error.code === error.TIMEOUT) {
+                    message = 'The location request timed out. Please try again.';
+                }
+                locationButton.disabled = false;
+                locationButton.removeAttribute('aria-busy');
+                alert(message);
+            }, {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 60000
+            });
+        }
+        var locationControl = L.control({ position: 'topleft' });
+        locationControl.onAdd = function () {
+            var container = L.DomUtil.create('div', 'leaflet-control-location');
+            locationButton = L.DomUtil.create('button', 'location-button', container);
+            locationButton.type = 'button';
+            locationButton.title = 'Show my location';
+            locationButton.setAttribute('aria-label', 'Show my location');
+            locationButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"></circle><path d="M12 2v3m0 14v3M2 12h3m14 0h3"></path></svg>';
+            L.DomEvent.disableClickPropagation(container);
+            L.DomEvent.on(locationButton, 'click', locateUser);
+            return container;
+        };
+        locationControl.addTo(map);
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }

@@ -10,6 +10,9 @@ in the export. The application loads the GeoJSON layer data and their styles
 directly from the local files. Stormwater basin locations, inlets, and power
 plants can be toggled from the layer control in the upper-right corner. Use
 the address search above the map to find New Jersey locations.
+Tap the location button to request a one-time device location; the browser
+will ask for permission. Location is not stored, and this feature requires
+HTTPS or localhost.
 
 ## QGIS Source Project
 
