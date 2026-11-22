@@ -121,6 +121,16 @@
         .leaflet-popup-content a {
             color: #a8c7fa !important;
         }
+        .leaflet-popup-content .google-maps-route {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 10px;
+            border-radius: 4px;
+            background: #1a73e8;
+            color: #ffffff !important;
+            font-weight: bold;
+            text-decoration: none;
+        }
         .map-legend {
             padding: 8px 10px;
             border-radius: 4px;
@@ -319,6 +329,7 @@
             navigator.geolocation.getCurrentPosition(function (position) {
                 var location = L.latLng(position.coords.latitude, position.coords.longitude);
                 var accuracy = position.coords.accuracy;
+                userLocationLatLng = location;
                 if (!userLocationAccuracy) {
                     userLocationAccuracy = L.circle(location, accuracy, {
                         color: '#60a5fa',
@@ -374,6 +385,38 @@
         locationControl.addTo(map);
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
+        }
+        var userLocationLatLng = null;
+        function addGoogleMapsRouteLink(layer) {
+            layer.on('popupopen', function (event) {
+                var popupElement = event.popup.getElement();
+                var content = popupElement && popupElement.querySelector('.leaflet-popup-content');
+                if (!content) {
+                    return;
+                }
+                var link = content.querySelector('.google-maps-route');
+                if (!link) {
+                    link = document.createElement('a');
+                    link.className = 'google-maps-route';
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    content.appendChild(link);
+                }
+                var destination = layer.getLatLng();
+                var url = 'https://www.google.com/maps/dir/?api=1';
+                if (userLocationLatLng) {
+                    url += '&origin=' + encodeURIComponent(userLocationLatLng.lat + ',' + userLocationLatLng.lng);
+                }
+                url += '&destination=' + encodeURIComponent(destination.lat + ',' + destination.lng);
+                url += '&travelmode=driving';
+                link.href = url;
+                link.textContent = userLocationLatLng
+                    ? 'Drive here in Google Maps'
+                    : 'Directions in Google Maps';
+                link.title = userLocationLatLng
+                    ? 'Open driving directions from your location'
+                    : 'Open driving directions; Google Maps may use your current location';
+            });
         }
         map.createPane('pane_OpenStreetMap_0');
         map.getPane('pane_OpenStreetMap_0').style.zIndex = 400;
@@ -450,6 +493,7 @@
 				addClassToPopupIfMedia(content, e.popup);
 			});
 			layer.bindPopup(content, { maxHeight: 400 });
+            addGoogleMapsRouteLink(layer);
         }
 
         function style_Inlets_1_0() {
@@ -539,6 +583,7 @@
 				addClassToPopupIfMedia(content, e.popup);
 			});
 			layer.bindPopup(content, { maxHeight: 400 });
+            addGoogleMapsRouteLink(layer);
         }
 
         function style_Power_Plants_RGGI_EGU_in_New_Jersey_2_0() {
@@ -611,6 +656,7 @@
                     }
                 });
                 layer.bindPopup(popup);
+                addGoogleMapsRouteLink(layer);
             }
         });
         map.addLayer(layer_Stormwater_Basins);

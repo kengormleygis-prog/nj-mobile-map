@@ -13,6 +13,7 @@ the address search above the map to find New Jersey locations.
 Tap the location button to request a one-time device location; the browser
 will ask for permission. Location is not stored, and this feature requires
 HTTPS or localhost.
+Open any map point and choose "Drive here in Google Maps" to get directions.
 
 ## QGIS Source Project
 
