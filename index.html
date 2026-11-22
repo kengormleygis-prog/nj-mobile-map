@@ -35,6 +35,33 @@
             line-height: 44px;
             font-size: 24px;
         }
+        #map .leaflet-photon {
+            overflow: visible;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #222;
+        }
+        #map .leaflet-photon input.photon-input,
+        #map .leaflet-photon input.photon-input:focus {
+            width: 260px;
+            height: 44px;
+            box-sizing: border-box;
+            padding: 8px 10px;
+            border: 0;
+            border-radius: 4px;
+            background: #222;
+            color: #f2f2f2;
+            font-size: 14px;
+        }
+        .photon-autocomplete {
+            max-width: calc(100vw - 24px);
+            border-radius: 4px;
+            background: #252525 !important;
+            color: #f2f2f2;
+        }
+        .photon-autocomplete li.on {
+            background: #325780;
+        }
         .leaflet-popup-content {
             max-width: calc(100vw - 48px) !important;
             max-height: 55vh;
@@ -65,6 +92,44 @@
         .leaflet-popup-content a {
             color: #a8c7fa !important;
         }
+        .map-legend {
+            padding: 8px 10px;
+            border-radius: 4px;
+            background: rgba(34, 34, 34, 0.95);
+            color: #f2f2f2;
+            font: 12px/1.5 Arial, Helvetica, sans-serif;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+        }
+        .map-legend-title {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+        .map-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            white-space: nowrap;
+        }
+        .map-legend-marker {
+            width: 10px;
+            height: 10px;
+            flex: 0 0 10px;
+            border-radius: 50%;
+            box-sizing: border-box;
+        }
+        .map-legend-stormwater {
+            background: #34d399;
+            border: 1px solid #064e3b;
+        }
+        .map-legend-inlets {
+            background: #487bb6;
+            border: 2px solid #325780;
+        }
+        .map-legend-power {
+            background: #e8718d;
+            border: 1px solid #232323;
+        }
         .leaflet-tile-pane {
             filter: invert(1) hue-rotate(180deg) brightness(0.78) contrast(1.12) saturate(0.65);
         }
@@ -76,6 +141,10 @@
                 margin-top: calc(12px + env(safe-area-inset-top));
                 margin-left: calc(12px + env(safe-area-inset-left));
             }
+            #map .leaflet-photon input.photon-input,
+            #map .leaflet-photon input.photon-input:focus {
+                width: min(220px, calc(100vw - 96px));
+            }
             .leaflet-control-attribution {
                 max-width: calc(100vw - 96px);
                 font-size: 9px;
@@ -85,6 +154,10 @@
             }
             .leaflet-popup {
                 margin-bottom: 8px;
+            }
+            .map-legend {
+                padding: 6px 8px;
+                font-size: 11px;
             }
         }
         </style>
@@ -191,6 +264,19 @@
         var zoomControl = L.control.zoom({
             position: 'topleft'
         }).addTo(map);
+        var addressSearchControl = L.control.photon({
+            position: 'topleft',
+            url: 'https://photon.komoot.io/api/?',
+            placeholder: 'Search an address',
+            noResultLabel: 'No addresses found',
+            feedbackEmail: null,
+            minChar: 3,
+            limit: 5,
+            submitDelay: 500,
+            lang: 'en',
+            bbox: [-75.65, 38.9, -73.85, 41.4]
+        }).addTo(map);
+        addressSearchControl.getContainer().querySelector('input').setAttribute('aria-label', 'Search an address');
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
         }
@@ -438,6 +524,18 @@
             'Inlets': layer_Inlets_1,
             'Power Plants': layer_Power_Plants_RGGI_EGU_in_New_Jersey_2
         }, { collapsed: false, position: 'topright' }).addTo(map);
+        var legendControl = L.control({ position: 'bottomleft' });
+        legendControl.onAdd = function () {
+            var legend = L.DomUtil.create('div', 'map-legend leaflet-control');
+            legend.setAttribute('aria-label', 'Map legend');
+            legend.innerHTML =
+                '<strong class="map-legend-title">Legend</strong>' +
+                '<div class="map-legend-item"><span class="map-legend-marker map-legend-stormwater"></span>Stormwater basins</div>' +
+                '<div class="map-legend-item"><span class="map-legend-marker map-legend-inlets"></span>Inlets</div>' +
+                '<div class="map-legend-item"><span class="map-legend-marker map-legend-power"></span>Power plants</div>';
+            return legend;
+        };
+        legendControl.addTo(map);
         setBounds();
         var i = 0;
         layer_Power_Plants_RGGI_EGU_in_New_Jersey_2.eachLayer(function(layer) {

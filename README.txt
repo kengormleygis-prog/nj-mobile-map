@@ -8,7 +8,8 @@ No web server or additional software is required.
 The map works because all the required JavaScript libraries are included
 in the export. The application loads the GeoJSON layer data and their styles
 directly from the local files. Stormwater basin locations, inlets, and power
-plants can be toggled from the layer control in the upper-right corner.
+plants can be toggled from the layer control in the upper-right corner. Use
+the address search above the map to find New Jersey locations.
 
 ## QGIS Source Project
 
