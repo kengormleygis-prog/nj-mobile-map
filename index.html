@@ -7,6 +7,7 @@
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="theme-color" content="#487bb6">
+        <link rel="icon" type="image/svg+xml" href="assets/devine-direction.svg">
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/qgis2web.css">
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
@@ -144,6 +145,13 @@
             margin-bottom: 3px;
             font-weight: bold;
         }
+        .map-legend-logo {
+            display: block;
+            width: 150px;
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 7px;
+        }
         .map-legend-item {
             display: flex;
             align-items: center;
@@ -198,9 +206,12 @@
                 padding: 6px 8px;
                 font-size: 11px;
             }
+            .map-legend-logo {
+                width: 138px;
+            }
         }
         </style>
-        <title>New Jersey Map</title>
+        <title>Devine Direction | New Jersey Map</title>
     </head>
     <body>
         <div id="map">
@@ -670,6 +681,7 @@
             var legend = L.DomUtil.create('div', 'map-legend leaflet-control');
             legend.setAttribute('aria-label', 'Map legend');
             legend.innerHTML =
+                '<img class="map-legend-logo" src="assets/devine-direction.svg" alt="Devine Direction">' +
                 '<strong class="map-legend-title">Legend</strong>' +
                 '<div class="map-legend-item"><span class="map-legend-marker map-legend-stormwater"></span>Stormwater basins</div>' +
                 '<div class="map-legend-item"><span class="map-legend-marker map-legend-inlets"></span>Inlets</div>' +

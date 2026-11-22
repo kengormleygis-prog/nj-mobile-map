@@ -15,6 +15,8 @@ will ask for permission. Location is not stored, and this feature requires
 HTTPS or localhost.
 Open any map point and choose "Drive here in Google Maps" to get directions.
 
+The reusable Devine Direction logo is in "assets/devine-direction.svg".
+
 ## QGIS Source Project
 
 The original QGIS project and its GeoJSON data are in the "qgis-project"
