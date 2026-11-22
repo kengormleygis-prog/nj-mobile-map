@@ -9,6 +9,12 @@ The map works because all the required JavaScript libraries are included
 in the export. The application loads the GeoJSON layer data and their styles
 directly from the local files.
 
+## QGIS Source Project
+
+The original QGIS project and its GeoJSON data are in the "qgis-project"
+folder. Open "qgis-project/nj_test.qgz" in QGIS; its data paths are relative
+so the project works after cloning or downloading this repository.
+
 ## Publishing on a Website
 
 If you upload the entire folder to a web server, the map will work 
