@@ -7,7 +7,8 @@ No web server or additional software is required.
 
 The map works because all the required JavaScript libraries are included
 in the export. The application loads the GeoJSON layer data and their styles
-directly from the local files.
+directly from the local files. Stormwater basin locations, inlets, and power
+plants can be toggled from the layer control in the upper-right corner.
 
 ## QGIS Source Project
 

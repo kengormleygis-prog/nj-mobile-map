@@ -105,10 +105,11 @@
         <script src="js/leaflet.photon.js"></script>
         <script src="data/Inlets_1.js"></script>
         <script src="data/Power_Plants_RGGI_EGU_in_New_Jersey_2.js"></script>
+        <script src="data/Stormwater_Basins.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
-        }).fitBounds([[38.97661986015095,-75.61322075687703],[39.781956722874725,-74.31125949547358]]);
+        }).fitBounds([[38.9,-75.65],[41.4,-73.85]]);
         window.addEventListener('resize', function () {
             map.invalidateSize();
         });
@@ -395,6 +396,48 @@
         });
         bounds_group.addLayer(layer_Power_Plants_RGGI_EGU_in_New_Jersey_2);
         map.addLayer(layer_Power_Plants_RGGI_EGU_in_New_Jersey_2);
+        map.createPane('pane_Stormwater_Basins');
+        map.getPane('pane_Stormwater_Basins').style.zIndex = 403;
+        var layer_Stormwater_Basins = new L.geoJson(json_Stormwater_Basins, {
+            pane: 'pane_Stormwater_Basins',
+            pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, {
+                    pane: 'pane_Stormwater_Basins',
+                    radius: 4,
+                    color: '#064e3b',
+                    weight: 1,
+                    fillColor: '#34d399',
+                    fillOpacity: 0.9
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                var popup = document.createElement('div');
+                var title = document.createElement('strong');
+                title.textContent = feature.properties.FACILITY_NAME || 'Stormwater basin';
+                popup.appendChild(title);
+                [
+                    ['Basin ID', 'SWMBASIN_ID'],
+                    ['Municipality', 'MUNICIPALITY'],
+                    ['County', 'COUNTY'],
+                    ['Basin type', 'SWMBASINTYPE'],
+                    ['NJPDES', 'NJPDES']
+                ].forEach(function (field) {
+                    var value = feature.properties[field[1]];
+                    if (value !== null && value !== undefined && value !== '') {
+                        var row = document.createElement('div');
+                        row.textContent = field[0] + ': ' + value;
+                        popup.appendChild(row);
+                    }
+                });
+                layer.bindPopup(popup);
+            }
+        });
+        map.addLayer(layer_Stormwater_Basins);
+        L.control.layers(null, {
+            'Stormwater Basins': layer_Stormwater_Basins,
+            'Inlets': layer_Inlets_1,
+            'Power Plants': layer_Power_Plants_RGGI_EGU_in_New_Jersey_2
+        }, { collapsed: false, position: 'topright' }).addTo(map);
         setBounds();
         var i = 0;
         layer_Power_Plants_RGGI_EGU_in_New_Jersey_2.eachLayer(function(layer) {
