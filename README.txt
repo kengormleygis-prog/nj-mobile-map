@@ -9,7 +9,9 @@ The map works because all the required JavaScript libraries are included
 in the export. The application loads the GeoJSON layer data and their styles
 directly from the local files. Stormwater basin locations, inlets, and power
 plants can be toggled from the layer control in the upper-right corner. Use
-the address search above the map to find New Jersey locations.
+the base map choices there to switch between dark, light, and satellite views.
+Use the address search above the map to find New Jersey locations. Map data
+provider credits remain visible as required.
 Tap the location button to request a one-time device location; the browser
 will ask for permission. Location is not stored, and this feature requires
 HTTPS or localhost.
