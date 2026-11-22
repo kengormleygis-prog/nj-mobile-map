@@ -10,6 +10,8 @@ in the export. The application loads the GeoJSON layer data and their styles
 directly from the local files. Stormwater basin locations, inlets, and power
 plants can be toggled from the layer control in the upper-right corner. Use
 the base map choices there to switch between dark, light, and satellite views.
+When using satellite, enable the Roads overlay in the same control to show
+roads and transportation labels over the imagery.
 Use the address search above the map to find New Jersey locations. Map data
 provider credits remain visible as required.
 Tap the location button to request a one-time device location; the browser

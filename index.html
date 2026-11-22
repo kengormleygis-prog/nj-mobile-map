@@ -437,6 +437,8 @@
         map.getPane('pane_Light').style.zIndex = 400;
         map.createPane('pane_Satellite');
         map.getPane('pane_Satellite').style.zIndex = 400;
+        map.createPane('pane_Roads');
+        map.getPane('pane_Roads').style.zIndex = 400.5;
         var openStreetMapAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>';
         var layer_Dark = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             pane: 'pane_Dark',
@@ -461,6 +463,14 @@
             minZoom: 1,
             maxZoom: 28,
             maxNativeZoom: 19
+        });
+        var layer_Roads = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', {
+            pane: 'pane_Roads',
+            opacity: 1.0,
+            attribution: 'Roads &copy; <a href="https://www.esri.com/">Esri</a>, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            maxNativeZoom: 23
         });
         map.addLayer(layer_Dark);
         function pop_Inlets_1(feature, layer) {
@@ -696,7 +706,8 @@
         }, {
             'Stormwater Basins': layer_Stormwater_Basins,
             'Inlets': layer_Inlets_1,
-            'Power Plants': layer_Power_Plants_RGGI_EGU_in_New_Jersey_2
+            'Power Plants': layer_Power_Plants_RGGI_EGU_in_New_Jersey_2,
+            'Roads': layer_Roads
         }, { collapsed: false, position: 'topright' }).addTo(map);
         var legendControl = L.control({ position: 'bottomleft' });
         legendControl.onAdd = function () {
